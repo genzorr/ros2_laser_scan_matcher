@@ -38,25 +38,21 @@
 #ifndef LASER_SCAN_MATCHER_LASER_SCAN_MATCHER_H
 #define LASER_SCAN_MATCHER_LASER_SCAN_MATCHER_H
 
-#include <sensor_msgs/msg/laser_scan.hpp>
 #include <geometry_msgs/msg/pose.hpp>
 #include <nav_msgs/msg/odometry.hpp>
+#include <sensor_msgs/msg/laser_scan.hpp>
+#include <tf2/utils.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+#include <tf2_ros/message_filter.h>
 #include <tf2_ros/transform_broadcaster.h>
 #include <tf2_ros/transform_listener.h>
-#include <tf2_ros/message_filter.h>
-#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
-#include <tf2/utils.h>
 
 #include "rclcpp/rclcpp.hpp"
 
-#include <csm/csm.h>  // csm defines min and max, but Eigen complains
-#include <boost/thread.hpp>
+#include <csm/csm.h> // csm defines min and max, but Eigen complains
 
-
-namespace scan_tools
-{
-class LaserScanMatcher: public rclcpp::Node
-{
+namespace scan_tools {
+class LaserScanMatcher : public rclcpp::Node {
 public:
   LaserScanMatcher();
   ~LaserScanMatcher();
@@ -70,8 +66,8 @@ private:
 
   std::shared_ptr<tf2_ros::TransformListener> tf_;
   std::shared_ptr<tf2_ros::TransformBroadcaster> tfB_;
-  tf2::Transform base_to_laser_;  // static, cached
-  tf2::Transform laser_to_base_; 
+  tf2::Transform base_to_laser_; // static, cached
+  tf2::Transform laser_to_base_;
   std::shared_ptr<tf2_ros::Buffer> tf_buffer_;
   rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr odom_publisher_;
   // Coordinate parameters
@@ -90,10 +86,10 @@ private:
   bool publish_odom_;
   bool publish_tf_;
 
-  tf2::Transform f2b_;     // fixed-to-base tf (pose of base frame in fixed frame)
-  tf2::Transform prev_f2b_; // previous fixed-to-base tf (for odometry calculation)
-  tf2::Transform f2b_kf_;  // pose of the last keyframe scan in fixed frame
-
+  tf2::Transform f2b_; // fixed-to-base tf (pose of base frame in fixed frame)
+  tf2::Transform
+      prev_f2b_; // previous fixed-to-base tf (for odometry calculation)
+  tf2::Transform f2b_kf_; // pose of the last keyframe scan in fixed frame
 
   tf2::Transform odom_to_base_tf;
 
@@ -107,26 +103,26 @@ private:
   std::vector<double> a_cos_;
   std::vector<double> a_sin_;
 
-
   rclcpp::Time last_icp_time_;
 
-  bool getBaseToLaserTf (const std::string& frame_id);
+  bool getBaseToLaserTf(const std::string &frame_id);
 
-  bool processScan(LDP& curr_ldp_scan, const rclcpp::Time& time);
-  void laserScanToLDP(const sensor_msgs::msg::LaserScan::SharedPtr& scan, LDP& ldp);
-  void createTfFromXYTheta(double x, double y, double theta, tf2::Transform& t);
+  bool processScan(LDP &curr_ldp_scan, const rclcpp::Time &time);
+  void laserScanToLDP(const sensor_msgs::msg::LaserScan::SharedPtr &scan,
+                      LDP &ldp);
+  void createTfFromXYTheta(double x, double y, double theta, tf2::Transform &t);
 
-  bool newKeyframeNeeded(const tf2::Transform& d);
+  bool newKeyframeNeeded(const tf2::Transform &d);
 
-  void add_parameter(
-    const std::string & name, const rclcpp::ParameterValue & default_value,
-    const std::string & description = "", const std::string & additional_constraints = "",
-    bool read_only = false);
-  void createCache (const sensor_msgs::msg::LaserScan::SharedPtr& scan_msg);
+  void add_parameter(const std::string &name,
+                     const rclcpp::ParameterValue &default_value,
+                     const std::string &description = "",
+                     const std::string &additional_constraints = "",
+                     bool read_only = false);
+  void createCache(const sensor_msgs::msg::LaserScan::SharedPtr &scan_msg);
 
+}; // LaserScanMatcher
 
-};  // LaserScanMatcher
+} // namespace scan_tools
 
-}  // namespace scan_tools
-
-#endif  // LASER_SCAN_MATCHER_LASER_SCAN_MATCHER_H
+#endif // LASER_SCAN_MATCHER_LASER_SCAN_MATCHER_H

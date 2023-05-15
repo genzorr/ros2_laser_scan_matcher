@@ -8,7 +8,7 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     set(CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE)
   endif()
 
-  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -msse2 -mavx2 -flto")
+  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -msse2 -mavx2")
 endif()
 
 find_package(ament_cmake REQUIRED)
@@ -19,11 +19,8 @@ find_package(tf2_ros REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 find_package(rcutils REQUIRED)
-find_package(PkgConfig)
 find_package(csm REQUIRED)
 find_package(Eigen3 REQUIRED)
-
-find_package(Boost COMPONENTS thread REQUIRED)
 
 include_directories(
   include
@@ -47,11 +44,8 @@ ament_target_dependencies(laser_scan_matcher
   tf2
   tf2_geometry_msgs
   csm
-  Boost
   nav_msgs
 )
 
 install(TARGETS laser_scan_matcher DESTINATION lib/${PROJECT_NAME})
-
-
 ament_package()
